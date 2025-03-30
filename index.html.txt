@@ -1,0 +1,771 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日本語教師のための生成AI活用Q&A</title>
+    <style>
+        :root {
+            --primary-color: #4a6da7;
+            --secondary-color: #f8f9fa;
+            --accent-color: #ff6b6b;
+            --text-color: #333;
+            --light-text: #666;
+            --border-color: #ddd;
+            --highlight-bg: #fcf8e3;
+            --success-color: #28a745;
+        }
+        
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f7f9;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .intro {
+            font-size: 1.1rem;
+            margin-top: 1rem;
+        }
+        
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+        
+        .sidebar {
+            flex: 1;
+            min-width: 250px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 20px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+        
+        .content {
+            flex: 3;
+            min-width: 300px;
+        }
+        
+        .search-container {
+            margin-bottom: 1.5rem;
+        }
+        
+        #search {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        
+        .category-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .category-tab {
+            background-color: var(--secondary-color);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+        
+        .category-tab:hover {
+            background-color: #e9ecef;
+        }
+        
+        .category-tab.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .question-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .question-item {
+            padding: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .question-item:hover {
+            background-color: #f0f4f8;
+        }
+        
+        .question-item.active {
+            background-color: var(--highlight-bg);
+            font-weight: 600;
+        }
+        
+        .question-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .question {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .answer {
+            margin-bottom: 1.5rem;
+        }
+        
+        .prompt-example {
+            background-color: #f1f3f5;
+            padding: 1rem;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+            border-left: 4px solid var(--primary-color);
+            margin: 1.5rem 0;
+            position: relative;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.3rem 0.6rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .copy-btn:hover {
+            background-color: #3a5a8a;
+        }
+        
+        .tips-box {
+            background-color: var(--highlight-bg);
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+        
+        .tips-title {
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            color: #856404;
+        }
+        
+        .image-example {
+            max-width: 100%;
+            margin: 1rem 0;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+        
+        th {
+            background-color: var(--secondary-color);
+        }
+        
+        .tag {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-right: 0.4rem;
+            margin-bottom: 0.4rem;
+            color: var(--light-text);
+        }
+        
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: background-color 0.2s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .back-to-top:hover {
+            background-color: #3a5a8a;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                position: static;
+                max-height: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>日本語教師のための生成AI活用Q&A</h1>
+        <p class="intro">生成AIを日本語教育に効果的に活用するためのQ&Aガイド。基礎知識から実践的なテクニックまで、研修参加者からの質問に対する回答をまとめています。</p>
+    </header>
+    
+    <div class="container">
+        <aside class="sidebar">
+            <div class="search-container">
+                <input type="text" id="search" placeholder="キーワードで検索...">
+            </div>
+            
+            <div class="category-tabs">
+                <div class="category-tab active" data-category="all">すべて</div>
+                <div class="category-tab" data-category="basic">基礎知識</div>
+                <div class="category-tab" data-category="material">教材作成</div>
+                <div class="category-tab" data-category="visual">視覚素材</div>
+                <div class="category-tab" data-category="practice">実践活用</div>
+                <div class="category-tab" data-category="ethics">対応策</div>
+            </div>
+            
+            <ul class="question-list" id="questionList">
+                <!-- 質問リストはJavaScriptで動的に生成 -->
+            </ul>
+        </aside>
+        
+        <main class="content" id="contentArea">
+            <!-- 質問と回答のカードはJavaScriptで動的に生成 -->
+        </main>
+    </div>
+    
+    <div class="back-to-top" id="backToTop">
+        <span>↑</span>
+    </div>
+    
+    <script>
+        // サンプルデータ
+        const qaData = [
+            {
+                id: 1,
+                category: "basic",
+                question: "生成AIとは何ですか？日本語教師として知っておくべき基本を教えてください。",
+                answer: `<p>生成AIとは、与えられた情報や指示をもとに、新しいテキスト、画像、音声などのコンテンツを作り出すことができる人工知能技術です。日本語教師として知っておくべき基本は、これらのツールが教材作成、例文生成、添削支援などに活用でき、業務効率化に役立つ一方で、完全に正確ではない場合もあるという点です。</p>
+                
+                <p>生成AIの仕組みは、膨大なデータから学習したパターンをもとに、人間のような文章や画像を生成することです。特にテキスト生成AIは、教師が入力した「プロンプト」（指示や質問）に応じて回答を生成します。</p>
+                
+                <p>日本語教師として特に知っておくべきツールには以下があります：</p>
+                <ul>
+                    <li><strong>ChatGPT</strong>：文章生成、例文作成、教案作成など多目的に使えます</li>
+                    <li><strong>Midjourney/DALL-E</strong>：場面設定のイラスト作成に活用できます</li>
+                    <li><strong>Canva</strong>：生成AI機能を含むデザインツールで、教材作成に便利です</li>
+                </ul>
+                
+                <p>これらのツールを使うことで、教材準備の時間を大幅に短縮でき、より創造的な授業設計に時間を使えるようになります。</p>`,
+                tags: ["基礎知識", "初心者向け", "ツール紹介"]
+            },
+            {
+                id: 2,
+                category: "basic",
+                question: "無料版と有料版の違いは何ですか？有料版に登録する価値はありますか？",
+                answer: `<p>無料版と有料版の主な違いは、処理速度、最新モデルへのアクセス、利用制限、および高度な機能の有無です。日本語教師として頻繁に使用する場合や、より高品質な教材を効率的に作成したい場合は、有料版の価値があるでしょう。</p>
+                
+                <div class="table-container">
+                    <h4>無料版と有料版の具体的な違い：</h4>
+                    <table>
+                        <tr>
+                            <th>機能</th>
+                            <th>無料版ChatGPT</th>
+                            <th>有料版ChatGPT Plus（月額約2,000円）</th>
+                        </tr>
+                        <tr>
+                            <td>モデル</td>
+                            <td>GPT-3.5</td>
+                            <td>GPT-4（より高性能）</td>
+                        </tr>
+                        <tr>
+                            <td>応答速度</td>
+                            <td>標準</td>
+                            <td>より高速</td>
+                        </tr>
+                        <tr>
+                            <td>利用制限</td>
+                            <td>混雑時にアクセス制限あり</td>
+                            <td>優先アクセス</td>
+                        </tr>
+                        <tr>
+                            <td>画像理解・生成</td>
+                            <td>限定的</td>
+                            <td>高度な画像処理</td>
+                        </tr>
+                        <tr>
+                            <td>プラグイン</td>
+                            <td>なし/限定的</td>
+                            <td>多数のプラグイン利用可能</td>
+                        </tr>
+                        <tr>
+                            <td>ファイルアップロード</td>
+                            <td>制限あり</td>
+                            <td>より多くのファイル形式とサイズ</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <h4>教師としての判断基準：</h4>
+                <ol>
+                    <li><strong>使用頻度</strong>：週に数回程度の使用なら無料版で十分</li>
+                    <li><strong>作成教材の複雑さ</strong>：詳細な教案や高度な例文が必要なら有料版が便利</li>
+                    <li><strong>画像生成のニーズ</strong>：場面設定の画像などを多く作成する場合は有料版が効率的</li>
+                    <li><strong>時間的制約</strong>：授業準備の時間が限られている場合、有料版の処理速度は魅力的</li>
+                </ol>
+                
+                <p>初めは無料版で試し、自分のニーズを確認した上で有料版への移行を検討するのがおすすめです。</p>`,
+                tags: ["基礎知識", "料金", "比較", "初心者向け"]
+            },
+            {
+                id: 3,
+                category: "material",
+                question: "教案作成をChatGPTで効率化したいです。具体的な方法を教えてください。",
+                answer: `<p>ChatGPTを使って教案作成を効率化するには、具体的な授業情報を含んだプロンプトを作成し、段階的に詳細化していく方法が効果的です。</p>
+                
+                <h4>基本的な教案作成の手順：</h4>
+                
+                <p>1. <strong>基本情報の提供</strong>：まず、以下の情報をChatGPTに伝えます。</p>
+                <div class="prompt-example">
+                    以下の条件で日本語授業の教案を作成してください。
+                    ・学習者レベル：初級前半（N5レベル）
+                    ・学習者の母語：英語
+                    ・クラス人数：10名
+                    ・授業時間：90分
+                    ・教える項目：「〜てもいいですか」の許可表現
+                    ・使用教材：みんなの日本語 第13課
+                    <button class="copy-btn">コピー</button>
+                </div>
+                
+                <p>2. <strong>教案の構造化を依頼</strong>：</p>
+                <div class="prompt-example">
+                    教案は以下の構成で作成してください。
+                    1. 授業目標
+                    2. 文型導入（10分）
+                    3. 基本練習（20分）
+                    4. 応用練習（30分）
+                    5. 活動（20分）
+                    6. まとめと確認（10分）
+                    <button class="copy-btn">コピー</button>
+                </div>
+                
+                <p>3. <strong>詳細の追加</strong>：生成された教案の特定部分を詳細化します。</p>
+                <div class="prompt-example">
+                    応用練習の部分をより詳しく説明してください。具体的な例文と、学生が間違えやすいポイントも含めてください。
+                    <button class="copy-btn">コピー</button>
+                </div>
+                
+                <p>4. <strong>教材の具体化</strong>：</p>
+                <div class="prompt-example">
+                    この教案に合わせた配布用ワークシートを作成してください。A4サイズで、基本練習と応用練習が含まれるものにしてください。
+                    <button class="copy-btn">コピー</button>
+                </div>
+                
+                <div class="tips-box">
+                    <h4 class="tips-title">効果的な教案作成のためのヒント：</h4>
+                    <ul>
+                        <li>学習者の特性（年齢、目的、学習歴など）を詳しく伝える</li>
+                        <li>前回の授業内容や学習者の苦手ポイントも含める</li>
+                        <li>良い回答が得られたら、テンプレートとして保存しておく</li>
+                        <li>一度に完璧を求めず、対話を重ねて改善していく</li>
+                    </ul>
+                </div>
+                
+                <p>この方法で、従来2時間かかっていた教案作成が20-30分程度に短縮できます。ただし、生成された教案は必ず自分で内容を確認し、必要に応じて調整してください。</p>`,
+                tags: ["教材作成", "教案", "時短", "プロンプト例"]
+            },
+            {
+                id: 4,
+                category: "visual",
+                question: "授業で使えるイラストを生成AIで作りたいのですが、思い通りのものができません。コツを教えてください。",
+                answer: `<p>思い通りのイラストを生成AIで作るには、詳細な説明、スタイル指定、そして段階的な修正が重要です。以下に具体的な方法を説明します。</p>
+                
+                <h4>効果的なイラスト生成の基本ステップ：</h4>
+                
+                <p>1. <strong>詳細な説明を提供する</strong>：</p>
+                <div class="prompt-example">
+                    レストランで注文をする若い男性と、それを受ける女性店員のイラスト。男性は日本語の本を見ながら「ハンバーガーをください」と言おうとしている。昼間の明るい雰囲気。シンプルな線画スタイル。教科書用のイラストとして使用。
+                    <button class="copy-btn">コピー</button>
+                </div>
+                
+                <p>2. <strong>スタイルの指定</strong>：</p>
+                <div class="prompt-example">
+                    スタイル：シンプルな線画、漫画風、白黒、日本の教科書風、子供向け
+                    <button class="copy-btn">コピー</button>
+                </div>
+                
+                <p>3. <strong>修正を依頼する</strong>：</p>
+                <div class="prompt-example">
+                    男性のポーズをもう少し自然にしてください。また、メニューを持っている様子を追加してください。
+                    <button class="copy-btn">コピー</button>
+                </div>
+                
+                <div class="tips-box">
+                    <h4 class="tips-title">効果的なプロンプト作成のポイント：</h4>
+                    <ol>
+                        <li><strong>5W1H を含める</strong>：誰が、何を、どこで、いつ、なぜ、どのように</li>
+                        <li><strong>視覚的詳細を加える</strong>：服装、表情、姿勢、背景</li>
+                        <li><strong>教育目的を明示する</strong>：「文法「〜てください」を教えるためのイラスト」など</li>
+                        <li><strong>複雑なシーンは分解する</strong>：一度に完璧を求めず、部分ごとに生成</li>
+                    </ol>
+                </div>
+                
+                <h4>よくある問題と解決法：</h4>
+                <ul>
+                    <li><strong>問題</strong>：顔や手の表現が不自然<br>
+                    <strong>解決法</strong>：「シンプルな表情」「手は省略」などと指定</li>
+                    
+                    <li><strong>問題</strong>：日本語のテキストが不正確<br>
+                    <strong>解決法</strong>：「テキストなしで作成」とし、後から別ツールで追加</li>
+                    
+                    <li><strong>問題</strong>：複雑すぎて学習者が混乱する<br>
+                    <strong>解決法</strong>：「教育目的のシンプルなイラスト」と明示</li>
+                </ul>
+                
+                <p>これらのテクニックを使うことで、授業に最適な視覚素材を効率的に作成できるようになります。</p>`,
+                tags: ["視覚素材", "イラスト", "DALL-E", "プロンプト例"]
+            },
+            {
+                id: 5,
+                category: "practice",
+                question: "「みんなの日本語」を使った授業にChatGPTを活用する具体的な方法を教えてください。",
+                answer: `<p>「みんなの日本語」を使った授業でChatGPTを活用するには、教科書の構成を理解したプロンプトを活用し、補助教材や練習問題の作成、文型説明の充実化などに役立てることができます。</p>
+                
+                <h4>「みんなの日本語」特化型プロンプトの基本:</h4>
+                <div class="prompt-example">
+                    「みんなの日本語」初級I第〇課の『〜』という文型について、以下の内容を作成してください。
+                    1. わかりやすい文型説明（初級レベルの語彙のみ使用）
+                    2. 第〇課までに出てきた語彙のみを使った例文を5つ
+                    3. パターンプラクティス用の問題を3セット
+                    4. 実践的な会話例を2つ
+                    <button class="copy-btn">コピー</button>
+                </div>
+                
+                <h4>具体的な活用方法:</h4>
+                
+                <p>1. <strong>導入場面の補強</strong></p>
+                <div class="prompt-example">
+                    「みんなの日本語」初級I第15課の「〜んです」の導入に使える場面設定を3つ考えてください。それぞれ簡単なイラストの説明も加えてください。
+                    <button class="copy-btn">コピー</button>
+                </div>
+                
+                <p>2. <strong>理解確認のための練習問題作成</strong></p>
+                <div class="prompt-example">
+                    「みんなの日本語」初級I第22課の条件表現「〜たら」「〜と」の練習問題を作成してください。第1課から第22課までの語彙のみを使用し、各文型5問ずつ、合計10問の問題を作ってください。
+                    <button class="copy-btn">コピー</button>
+                </div>
+                
+                <p>3. <strong>文化情報の補足説明</strong></p>
+                <div class="prompt-example">
+                    「みんなの日本語」初級II第36課のテーマ「日本の祭り」について、非漢字圏の学習者向けに、やさしい日本語で補足説明を200字程度で作成してください。
+                    <button class="copy-btn">コピー</button>
+                </div>
+                
+                <div class="tips-box">
+                    <h4 class="tips-title">注意点:</h4>
+                    <ul>
+                        <li>ChatGPTは「みんなの日本語」の詳細な内容まで正確に把握していない場合があるため、実際の教科書内容と照らし合わせながら使用する</li>
+                        <li>生成された内容は教師が必ず確認し、不適切な語彙や表現があれば修正する</li>
+                        <li>特に初級前半では、未習語彙が混入していないか注意深くチェックする</li>
+                    </ul>
+                </div>
+                
+                <p>この方法を活用することで、「みんなの日本語」の枠組みを維持しながら、より多様な練習問題や説明を効率的に作成できます。教師の負担を減らしつつ、学習者にとって理解しやすい補助教材を提供できるでしょう。</p>`,
+                tags: ["実践活用", "みんなの日本語", "教科書", "プロンプト例"]
+            },
+            {
+                id: 6,
+                category: "ethics",
+                question: "学生がAIを使って作文を書いてきたときの対処法や見分け方を教えてください。",
+                answer: `<p>学生のAI使用を見分けるには言語的特徴、文体の一貫性、学生の普段の能力との比較などが手がかりになります。効果的な対処法は、AIを禁止するのではなく、適切な活用方法を教え、評価方法を工夫することです。</p>
+                
+                <h4>AI生成文章の特徴的な手がかり:</h4>
+                
+                <ul>
+                    <li><strong>言語的特徴:</strong>
+                        <ul>
+                            <li>語彙が学習者のレベルを超えて高度すぎる</li>
+                            <li>日本語としては正しいが不自然な表現</li>
+                            <li>特徴的なAI言い回し（「〜と言えるでしょう」など）</li>
+                            <li>誤用がほとんどない（特に初中級者の場合は不自然）</li>
+                        </ul>
+                    </li>
+                    
+                    <li><strong>構造と内容:</strong>
+                        <ul>
+                            <li>極めて論理的で整然とした構成</li>
+                            <li>個人的なエピソードや感情表現が希薄</li>
+                            <li>具体的な体験談が曖昧または一般的</li>
+                            <li>テンプレート的な結論</li>
+                        </ul>
+                    </li>
+                </ul>
+                
+                <h4>効果的な対応策:</h4>
+                
+                <p>1. <strong>予防的アプローチ:</strong></p>
+                <ul>
+                    <li>授業内で作文を書かせる時間を設ける</li>
+                    <li>個人的な経験や意見を含める指示を出す</li>
+                    <li>段階的な作文プロセス（アイデア出し→下書き→推敲）を要求</li>
+                    <li>AIツールの適切な使い方を教える</li>
+                </ul>
+                
+                <p>2. <strong>課題設計の工夫:</strong></p>
+                <ul>
+                    <li>クラス内での即興作文</li>
+                    <li>手書きでの提出を求める</li>
+                    <li>独自の体験や具体例を含めるよう指示</li>
+                    <li>複数の草稿提出を求める</li>
+                </ul>
+                
+                <div class="tips-box">
+                    <h4 class="tips-title">AIと共存する作文指導のアプローチ:</h4>
+                    <ol>
+                        <li><strong>評価基準の見直し:</strong>
+                            <ul>
+                                <li>最終成果物だけでなく、プロセスも評価</li>
+                                <li>クラス内での口頭発表と作文の一貫性を確認</li>
+                            </ul>
+                        </li>
+                        <li><strong>AIを活用した学習法を教える:</strong>
+                            <ul>
+                                <li>AIを使った下書きの改善方法</li>
+                                <li>AI添削の限界と人間の校正の重要性</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+                
+                <p>AI利用を単純に「不正」と見なすのではなく、デジタル時代のライティングスキルの一部として捉え、適切な活用法を教えることが長期的には効果的です。学生がAIをどのように使ったかをオープンに話し合える環境づくりも重要です。</p>`,
+                tags: ["対応策", "作文", "評価", "AI検出"]
+            }
+        ];
+        
+        // 質問リストの生成
+        function generateQuestionList(category = 'all') {
+            const questionList = document.getElementById('questionList');
+            questionList.innerHTML = '';
+            
+            qaData.forEach((item) => {
+                if (category === 'all' || item.category === category) {
+                    const li = document.createElement('li');
+                    li.className = 'question-item';
+                    li.dataset.id = item.id;
+                    li.textContent = item.question;
+                    li.addEventListener('click', () => showQuestion(item.id));
+                    questionList.appendChild(li);
+                }
+            });
+        }
+        
+        // 質問と回答の表示
+        function showQuestion(id) {
+            const contentArea = document.getElementById('contentArea');
+            contentArea.innerHTML = '';
+            
+            // リストアイテムのアクティブ状態を更新
+            document.querySelectorAll('.question-item').forEach(item => {
+                item.classList.remove('active');
+                if (parseInt(item.dataset.id) === id) {
+                    item.classList.add('active');
+                }
+            });
+            
+            const qaItem = qaData.find(item => item.id === id);
+            if (qaItem) {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                
+                const question = document.createElement('h3');
+                question.className = 'question';
+                question.textContent = qaItem.question;
+                
+                const answer = document.createElement('div');
+                answer.className = 'answer';
+                answer.innerHTML = qaItem.answer;
+                
+                const tagContainer = document.createElement('div');
+                tagContainer.className = 'tag-container';
+                qaItem.tags.forEach(tag => {
+                    const tagSpan = document.createElement('span');
+                    tagSpan.className = 'tag';
+                    tagSpan.textContent = tag;
+                    tagContainer.appendChild(tagSpan);
+                });
+                
+                card.appendChild(question);
+                card.appendChild(answer);
+                card.appendChild(tagContainer);
+                
+                contentArea.appendChild(card);
+                
+                // コピーボタンの機能追加
+                document.querySelectorAll('.copy-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const text = this.parentElement.textContent.replace('コピー', '').trim();
+                        navigator.clipboard.writeText(text).then(() => {
+                            // コピー成功時の表示
+                            const originalText = this.textContent;
+                            this.textContent = 'コピー完了';
+                            this.style.backgroundColor = var(--success-color);
+                            setTimeout(() => {
+                                this.textContent = originalText;
+                                this.style.backgroundColor = '';
+                            }, 2000);
+                        });
+                    });
+                });
+            }
+        }
+        
+        // 検索機能
+        function setupSearch() {
+            const searchInput = document.getElementById('search');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const questionItems = document.querySelectorAll('.question-item');
+                
+                questionItems.forEach(item => {
+                    const id = parseInt(item.dataset.id);
+                    const qaItem = qaData.find(qa => qa.id === id);
+                    const question = qaItem.question.toLowerCase();
+                    const tags = qaItem.tags.join(' ').toLowerCase();
+                    
+                    if (question.includes(searchTerm) || tags.includes(searchTerm)) {
+                        item.style.display = '';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        }
+        
+        // カテゴリータブの機能
+        function setupCategoryTabs() {
+            const tabs = document.querySelectorAll('.category-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // アクティブ状態の更新
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 選択されたカテゴリーの質問を表示
+                    const category = this.dataset.category;
+                    generateQuestionList(category);
+                    
+                    // 最初の質問を表示
+                    const firstVisibleQuestion = document.querySelector('.question-item');
+                    if (firstVisibleQuestion) {
+                        firstVisibleQuestion.click();
+                    } else {
+                        document.getElementById('contentArea').innerHTML = '<div class="question-card"><p>このカテゴリーの質問はありません。</p></div>';
+                    }
+                });
+            });
+        }
+        
+        // トップに戻るボタンの機能
+        function setupBackToTop() {
+            const backToTop = document.getElementById('backToTop');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    backToTop.classList.add('visible');
+                } else {
+                    backToTop.classList.remove('visible');
+                }
+            });
+            
+            backToTop.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+        
+        // 初期化
+        document.addEventListener('DOMContentLoaded', () => {
+            generateQuestionList();
+            setupSearch();
+            setupCategoryTabs();
+            setupBackToTop();
+            
+            // 最初の質問を表示
+            if (qaData.length > 0) {
+                showQuestion(qaData[0].id);
+            }
+        });
+    </script>
